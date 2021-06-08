@@ -43,16 +43,55 @@ public class Main {
     List<List<Consumer<String>>> consumerInListInListWorking2 = List.of(consumerInList);
 
     // I am very confused why this is not working... Maybe a bug during type inference?
+    // When expanding the lambda statement to the anonymous class it presents everything works fine
+    List<List<Consumer<String>>> consumerInListInListWithAnonymousClass = List
+        .of(List.of(CheckedConsumer.wrap(new CheckedConsumer<String, TestException>() {
+          @Override
+          public void accept(String s) throws TestException {
+            doStuff(s, "bar");
+          }
+        })));
+    // From here we can reduce the anonymous class step by step towards the lambda and see where the compilation breaks.
+    List<List<Consumer<String>>> consumerInListInListStep1 = List
+        .of(List.of(CheckedConsumer.wrap((String s) -> {
+              doStuff(s, "bar");
+            }
+        )));
+    List<List<Consumer<String>>> consumerInListInListStep2 = List
+        .of(List.of(CheckedConsumer.wrap((String s) -> doStuff(s, "bar")
+        )));
+
+    // As soon as we arrive the minimal lambda representation the compilation breaks again :(
+//    List<List<Consumer<String>>> consumerInListInListWithMinimalLambda = List
+//        .of(List.of(CheckedConsumer.wrap(s -> doStuff(s, "bar"))));
+
+
+    // Casting the lambda statement works fine
+    List<List<Consumer<String>>> consumerInListInListWithMinimalLambdaCasted = List
+        .of(List.of(CheckedConsumer.wrap((CheckedConsumer<String, TestException>) s -> doStuff(s, "bar"))));
+
+    // Even a method reference works fine
+    List<List<Consumer<String>>> consumerInListInListWithMethodReference = List
+        .of(List.of(CheckedConsumer.wrap(Main::doStuffWithOneParameter)));
+
+    // Another observation: When removing the bound type parameter `E` from the function CheckedConsumer#wrap
+    // and replacing it with a wildcard the previous stated breaking examples seem to work fine..
 
     System.out.println("main method exit");
   }
 
   public static void doStuff(String left, String right) throws TestException {
-    if (left.equals("EXCEPTION")) {
+    if ("EXCEPTION".equals(left)) {
       throw new TestException();
     }
     System.out.println("STUFF: " + left + " " + right);
   }
 
+  public static void doStuffWithOneParameter(String s) throws TestException {
+    if ("EXCEPTION".equals(s)) {
+      throw new TestException();
+    }
+    System.out.println("STUFF with one parameter: " + s);
+  }
 
 }
