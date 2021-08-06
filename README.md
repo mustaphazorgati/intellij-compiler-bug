@@ -1,13 +1,53 @@
 # Java Compiler Bug?
 This example project displays a weird behaviour of the java compiler I found.
 The reason I have created this repository is to have some reproducible code which can be 
-used to identify what's wrong.
+used to identify what's wrong. This project requires JDK 8+.
 
-## How to reproduce 
+## How to reproduce
 1. This repository is an IntelliJ Idea Project. Just open that.
 2. Read the main method of the class Main carefully.
 3. Uncomment the breaking lines and compile either through maven (see maven wrapper) or in IntelliJ directly.
 4. Find out if this breaks on your System ;)
+
+## Automatically test locally installed JDKs
+There is a script called `compile_with_local_jdks.sh`. Provide as arguments the base folder where your JDKs are in. It will automatically iterate over every JDK found and try to compile the code.<br/>
+**Important:** Without any modification the code compiles. Please uncomment one of the breaking lines before automatically testing :) <br/>
+The script detects if the specific compilation error is found. Otherwiese a `other error` message is shown.
+
+Here is the result with my locally installed JDKs
+```
+JDK                     | compiles?           
+adopt-openj9-11.0.11    | no                  
+adopt-openj9-13.0.2     | no                  
+adopt-openj9-14.0.2     | no                  
+adopt-openj9-15.0.2     | no                  
+adopt-openj9-16         | no                  
+adopt-openj9-1.8.0_292  | yes                 
+adopt-openjdk-13.0.2    | no                  
+adopt-openjdk-14.0.2    | no                  
+adopt-openjdk-15.0.2    | no                  
+adopt-openjdk-16.0.2    | no                  
+adopt-openjdk-1.8.0_302 | yes                 
+azul-11.0.9.1           | no                  
+azul-13.0.5.1           | no                  
+azul-15.0.4             | no                  
+azul-16.0.2             | no                  
+azul-1.8.0_302          | yes                 
+corretto-11.0.12        | no                  
+corretto-15.0.2         | no                  
+corretto-16.0.2         | no                  
+corretto-1.8.0_302      | yes                 
+liberica-11.0.12        | no                  
+liberica-16.0.2         | no                  
+liberica-1.8.0_302      | yes                 
+sapmachine-11.0.12      | no                  
+sapmachine-16.0.2       | no                  
+java-11-adoptopenjdk    | no                  
+java-11-openjdk         | no                  
+java-16-openjdk         | no                  
+java-8-jdk              | yes                 
+zulu-14                 | no 
+```
 
 ## My Environment
 
