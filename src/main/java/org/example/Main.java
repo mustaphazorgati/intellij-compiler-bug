@@ -95,7 +95,6 @@ public class Main {
     // tested JDKs:
     // JDK                     | compiles?
     // adopt-openj9-11.0.11    | no
-    // adopt-openj9-11.0.11    | no
     // adopt-openj9-13.0.2     | no
     // adopt-openj9-14.0.2     | no
     // adopt-openj9-15.0.2     | no
