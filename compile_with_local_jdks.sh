@@ -20,50 +20,11 @@ function helpAndExit() {
   exit "$1"
 }
 
-##constants
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-
-# Arguments:
-#   $1: length of first column
-#   $2: length of second column
-#   $3: first column value
-#   $4: second colum value
-function printRow() {
-  printf "$(determineRowColor "$4")%-${1}s | %-${2}s\n" "$3" "$4"
-}
-
-# Arguments:
-#  $1: compiles value
-function determineRowColor() {
-  [[ "$1" == 'yes' ]] && echo "$GREEN"
-  [[ "$1" == 'no' || "$1" == 'other error' ]] && echo "$RED"
-}
-
-# Arguments:
-#   $1: maven log
-function mavenLogContainsError() {
-  if [[ "$1" == *"unreported exception org.example.exception.TestException; must be caught or declared to be thrown"* ]]; then
-    echo TRUE
-  else
-    echo FALSE
-  fi
-}
-
-# Arguments:
-#   $1: Bash Array of Strings
-function getLongestJdkLength() {
-  longestJdkNameLength=0
-  for jdk in "${jdks[@]}"; do
-    length=$(basename "$jdk" | sed -z 's/\n//'  | wc -m)
-    [[ $length -gt $longestJdkNameLength ]] && longestJdkNameLength=$length
-  done
-  echo "$longestJdkNameLength"
-}
-
 function main() {
   [[ "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
   [[ $# -eq 0 ]] && helpAndExit 1
+  [[ "$(dirname "$0")" != "." ]] && echo "You have to execute this script from the same directory" && exit 1
+  . .utils.sh
   
   jdks=()
 
@@ -73,12 +34,9 @@ function main() {
         if [[ -f "$possibleJdkPath/bin/java" ]]; then
           jdks+=( "$possibleJdkPath" )
         fi
-      done < <(find "$dir" -maxdepth 1 -type d)
+      done < <(find "$dir" -maxdepth 1 -type d | sort)
     fi
   done
-
-  # sort array
-  IFS=$'\n' jdks=($(sort <<<"${jdks[*]}")); unset IFS
 
   echo detected JDKs:
   for jdk in "${jdks[@]}"; do

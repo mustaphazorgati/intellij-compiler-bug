@@ -9,9 +9,12 @@ used to identify what's wrong. This project requires JDK 8+.
 3. Uncomment the breaking lines and compile either through maven (see maven wrapper) or in IntelliJ directly.
 4. Find out if this breaks on your System ;)
 
-## Automatically test locally installed JDKs
+## Automatically compile with different JDKs
+
+### locally installed JDKs
 There is a script called `compile_with_local_jdks.sh`. Provide as arguments the base folder where your JDKs are in. It will automatically iterate over every JDK found and try to compile the code.<br/>
 **Important:** Without any modification the code compiles. Please uncomment one of the breaking lines before automatically testing :) <br/>
+**Important:** Due to a limitation from the maven wrapper this script has to be executed within the project directory. Otherwise, it won't continue <br/>
 The script detects if the specific compilation error is found. Otherwiese a `other error` message is shown.
 
 Here is the result with my locally installed JDKs
@@ -47,6 +50,39 @@ java-11-openjdk         | no
 java-16-openjdk         | no                  
 java-8-jdk              | yes                 
 zulu-14                 | no 
+```
+
+### Using Docker
+When you don't want to download multiple JDKs and run them you can use the script `compile_with_docker_jdks.sh` to use docker containers and compile this project automatically. Within that script you'll find an array called `images`. Just add/remove JDK docker images which you want to test.<br/>
+**Important:** Without any image modification of the script you'll have to download a lot of docker images. If you are impatient just comment out some ;)<br/>
+**Important:** This script can be executed anywhere ;)<br/>
+The script detects if the specific compilation error is found. Otherwiese a `other error` message is shown.
+
+Here is the result of the script without adding/removing any JDks
+```
+image                       | compiles?           
+adoptopenjdk:8-jdk-hotspot  | yes                 
+adoptopenjdk:11-jdk-hotspot | no                  
+adoptopenjdk:12-jdk-hotspot | no                  
+adoptopenjdk:13-jdk-hotspot | no                  
+adoptopenjdk:14-jdk-hotspot | no                  
+adoptopenjdk:15-jdk-hotspot | no                  
+adoptopenjdk:16-jdk-hotspot | no                  
+adoptopenjdk:8-jdk-openj9   | yes                 
+adoptopenjdk:11-jdk-openj9  | no                  
+adoptopenjdk:12-jdk-openj9  | no                  
+adoptopenjdk:13-jdk-openj9  | no                  
+adoptopenjdk:14-jdk-openj9  | no                  
+adoptopenjdk:15-jdk-openj9  | no                  
+adoptopenjdk:16-jdk-openj9  | no                  
+openjdk:8                   | yes                 
+openjdk:11                  | no                  
+openjdk:12                  | no                  
+openjdk:13                  | no                  
+openjdk:14                  | no                  
+openjdk:15                  | no                  
+openjdk:16                  | no                  
+openjdk:17                  | yes
 ```
 
 ## My Environment
